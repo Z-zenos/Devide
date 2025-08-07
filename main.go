@@ -6,12 +6,16 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
+	"github.com/Z-zenos/devide/internal/player"
 )
 
-type Game struct{}
+type Game struct {
+	player *player.Player
+}
 
 func (g *Game) Update() error {
 	// TODO: Handle input, update game state, etc.
+	g.player.Update()
 	return nil
 }
 
@@ -27,6 +31,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	vector.DrawFilledRect(screen, x, y+h-1, w, 1, borderColor, false)   // Bottom
 	vector.DrawFilledRect(screen, x, y, 1, h, borderColor, false)       // Left
 	vector.DrawFilledRect(screen, x+w-1, y, 1, h, borderColor, false)   // Right
+	// Draw player
+	g.player.Draw(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
@@ -37,7 +43,9 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 func main() {
 	ebiten.SetWindowSize(640, 480)
 	ebiten.SetWindowTitle("Devide Game")
-	game := &Game{}
+	game := &Game{
+		player: player.NewPlayer(),
+	}
 
 	if err := ebiten.RunGame(game); err != nil {
 		log.Fatal(err)
